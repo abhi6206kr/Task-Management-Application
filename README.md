@@ -1,76 +1,172 @@
-# Task Manager API
+Task Manager Application
+📦 Project Structure
+backend/ - Node.js/Express server for API and authentication.
 
-A simple REST API for managing tasks built with Node.js, Express, and MongoDB.
+frontend/ - React app for user interface.
 
-## Features
+🚀 Setup Instructions
+Backend
+bash
+Copy
+Edit
+cd backend
+npm install
+Create .env inside /backend with:
 
-- Create, read, update, and delete tasks
-- Store tasks in MongoDB database
-- RESTful architecture
+ini
+Copy
+Edit
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_secret_key
+Start the server:
 
-## Technologies Used
+bash
+Copy
+Edit
+npm run dev
+(Server runs on http://localhost:5000)
 
-- Node.js
-- Express.js
-- MongoDB
-- Mongoose
+Frontend
+bash
+Copy
+Edit
+cd frontend
+npm install
+npm start
+(React app runs on http://localhost:3000)
 
-## Installation
+🛠 Technical Choices and Architecture
+Frontend: React, TailwindCSS, React Router, Axios
 
-1. Clone this repository
-   ```
-   git clone https://github.com/yourusername/task-manager-api.git
-   ```
+Backend: Node.js, Express.js
 
-2. Install dependencies
-   ```
-   cd task-manager-api
-   npm install
-   ```
+Database: MongoDB Atlas (cloud database)
 
-3. Create a `.env` file in the root directory
-   ```
-   PORT=5000
-   MONGO_URI=your_mongodb_connection_string
-   ```
+Authentication: JWT (JSON Web Token)
 
-4. Start the server
-   ```
-   npm run dev
-   ```
+State Management: React Hooks and Custom Hooks (useTasks)
 
-## API Endpoints
+API Communication: Axios with Auth Token Interceptor
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /api/tasks | Get all tasks |
-| POST | /api/tasks | Create a new task |
-| GET | /api/tasks/:id | Get a specific task by ID |
-| PUT | /api/tasks/:id | Update a task |
-| DELETE | /api/tasks/:id | Delete a task |
+Styling: TailwindCSS for fast, responsive design
 
-## Request Examples
+📚 Database Schema
+User Model
 
-### Create a task
-```
-POST /api/tasks
-Content-Type: application/json
-
+json
+Copy
+Edit
 {
-  "title": "Complete project",
-  "description": "Finish the task manager API project"
+  "email": "string (unique)",
+  "password": "string (hashed)"
 }
-```
+Task Model
 
-### Update a task
-```
-PUT /api/tasks/60d21b4667d0d8992e610c85
-Content-Type: application/json
-
+json
+Copy
+Edit
 {
-  "completed": true
+  "title": "string",
+  "description": "string",
+  "status": "active" or "completed",
+  "priority": "Low" | "Medium" | "High",
+  "createdAt": "date",
+  "userId": "reference to User"
 }
-```
-## Author
+💻 How to Run Locally
+Clone this repository:
 
-Abhishek
+bash
+Copy
+Edit
+git clone https://github.com/your-username/task-manager-app.git
+Set up backend (Node.js):
+
+bash
+Copy
+Edit
+cd backend
+npm install
+npm run dev
+Set up frontend (React):
+
+bash
+Copy
+Edit
+cd frontend
+npm install
+npm start
+Visit http://localhost:3000 in your browser.
+
+🌱 3. Seed Data
+In your backend, you can create a simple seed script:
+
+backend/seed.js
+
+javascript
+Copy
+Edit
+require('dotenv').config();
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+const User = require('./models/User');
+const Task = require('./models/Task');
+
+async function seed() {
+  await mongoose.connect(process.env.MONGO_URI);
+  await User.deleteMany();
+  await Task.deleteMany();
+
+  const password = await bcrypt.hash('password123', 10);
+
+  const users = await User.insertMany([
+    { email: 'user1@example.com', password },
+    { email: 'user2@example.com', password },
+    { email: 'user3@example.com', password },
+  ]);
+
+  const tasks = [
+    {
+      title: 'Buy groceries',
+      description: 'Milk, Bread, Cheese',
+      priority: 'High',
+      userId: users[0]._id,
+    },
+    {
+      title: 'Walk the dog',
+      description: 'Take Sparky out for 30 mins',
+      priority: 'Medium',
+      userId: users[0]._id,
+    },
+    {
+      title: 'Finish project report',
+      description: 'Submit by Sunday',
+      priority: 'High',
+      userId: users[1]._id,
+    },
+  ];
+
+  await Task.insertMany(tasks);
+
+  console.log('Seeded database successfully!');
+  process.exit();
+}
+
+seed();
+Run it:
+
+bash
+Copy
+Edit
+node seed.js
+✅ Now you have 3 users + some tasks ready for testing!
+
+📤 4. Push to GitHub
+Inside your project folder:
+
+bash
+Copy
+Edit
+git add .
+git commit -m "Initial submission: Task Manager App"
+git push origin main
